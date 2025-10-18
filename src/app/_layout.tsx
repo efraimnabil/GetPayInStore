@@ -1,16 +1,19 @@
+import { LockScreenOverlay } from '@/components/LockScreenOverlay';
+import { useAutoLock } from '@/hooks/useAutoLock';
 import { queryClient } from '@/services/queryClient';
 import { mmkvPersister } from '@/services/queryPersister';
-import { store } from '@/store/store';
+import { RootState, store } from '@/store/store';
 import { theme } from '@/theme/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { PanResponder, View } from 'react-native';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { ThemeProvider } from 'styled-components/native';
 
 export {
@@ -50,7 +53,6 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-
   return (
     <Provider store={store}>
       <PersistQueryClientProvider 
@@ -58,12 +60,43 @@ function RootLayoutNav() {
         persistOptions={{ persister: mmkvPersister }}
       >
         <ThemeProvider theme={theme}>
-          <Stack>
-            <Stack.Screen name="index" options={{ title: 'Login' }} />
-          </Stack>
-          <Toast />
+          <AppContent />
         </ThemeProvider>
       </PersistQueryClientProvider>
     </Provider>
+  );
+}
+
+// Separate component that can use Redux hooks
+function AppContent() {
+  const { resetTimer } = useAutoLock();
+  const { isLocked } = useSelector((state: RootState) => state.lock);
+
+  // Create PanResponder to detect any touch and reset the inactivity timer
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => {
+        resetTimer();
+        return false; // Don't capture the touch, let it pass through
+      },
+      onMoveShouldSetPanResponder: () => {
+        resetTimer();
+        return false;
+      },
+    })
+  ).current;
+
+  return (
+    <View style={{ flex: 1 }} {...panResponder.panHandlers}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <Toast />
+      
+      {/* Conditionally render lock screen overlay */}
+      {isLocked && <LockScreenOverlay />}
+    </View>
   );
 }

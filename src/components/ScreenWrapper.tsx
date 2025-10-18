@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { SafeAreaView, ViewProps } from 'react-native';
+import { ViewProps } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 
 interface ScreenWrapperProps extends ViewProps {
@@ -11,8 +12,8 @@ interface ScreenWrapperProps extends ViewProps {
 
 const Container = styled(SafeAreaView)<{ noPadding?: boolean; backgroundColor?: string }>`
   flex: 1;
-  background-color: ${({ theme, backgroundColor }) => backgroundColor || theme.colors.background};
-  padding: ${({ theme, noPadding }) => (noPadding ? 0 : theme.spacing.md)}px;
+  background-color: ${({ theme, backgroundColor }) => backgroundColor || theme?.colors?.background || '#F2F2F7'};
+  padding: ${({ theme, noPadding }) => (noPadding ? 0 : (theme?.spacing?.md || 16))}px;
 `;
 
 const ScrollContainer = styled.ScrollView<{ noPadding?: boolean }>`
