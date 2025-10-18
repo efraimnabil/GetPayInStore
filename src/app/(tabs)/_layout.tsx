@@ -1,50 +1,66 @@
+import { useSession } from '@/hooks/useSession';
 import { Ionicons } from '@expo/vector-icons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import React from 'react';
-import { Pressable } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { useColorScheme } from '@/components/useColorScheme';
-import Colors from '@/constants/Colors';
-
+/**
+ * Protected Tab Layout
+ * - Checks for authenticated session using useSession hook
+ * - Shows loading spinner while session is being restored
+ * - Redirects to login if no user is authenticated
+ * - Renders tab navigator if user is authenticated
+ */
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { user, isLoading } = useSession();
 
+  // Show loading spinner while checking session
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
+
+  // Redirect to login if no user is authenticated
+  if (!user) {
+    return <Redirect href="/" />;
+  }
+
+  // Render tabs if user is authenticated
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
-      }}>
+        tabBarActiveTintColor: '#007AFF',
+        headerShown: true,
+        tabBarStyle: {
+          backgroundColor: '#fff',
+        },
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="products"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <Ionicons name="home" size={28} color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          title: 'Products',
+          tabBarIcon: ({ color }) => <Ionicons name="cube-outline" size={24} color={color} />,
+          headerTitle: 'Products',
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="category"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <Ionicons name="layers" size={28} color={color} />,
+          title: 'Category',
+          tabBarIcon: ({ color }) => <Ionicons name="grid-outline" size={24} color={color} />,
+          headerTitle: 'Categories',
+        }}
+      />
+      <Tabs.Screen
+        name="signOut"
+        options={{
+          title: 'Sign Out',
+          tabBarIcon: ({ color }) => <Ionicons name="log-out-outline" size={24} color={color} />,
+          headerTitle: 'Account',
         }}
       />
     </Tabs>
