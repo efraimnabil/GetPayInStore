@@ -60,15 +60,15 @@ function RootLayoutNav() {
         persistOptions={{ persister: mmkvPersister }}
       >
         <ThemeProvider theme={theme}>
-          <AppContent />
+          <AppLocker />
         </ThemeProvider>
       </PersistQueryClientProvider>
     </Provider>
   );
 }
 
-// Separate component that can use Redux hooks
-function AppContent() {
+// AppLocker component handles auto-lock functionality and lock screen overlay
+function AppLocker() {
   const { resetTimer } = useAutoLock();
   const { isLocked } = useSelector((state: RootState) => state.lock);
 
@@ -93,6 +93,8 @@ function AppContent() {
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
+      
+      {/* Global UI Components */}
       <Toast />
       
       {/* Conditionally render lock screen overlay */}

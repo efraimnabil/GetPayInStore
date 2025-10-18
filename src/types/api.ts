@@ -11,10 +11,11 @@ export interface LoginResponse {
   lastName: string;
   gender: string;
   image: string;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
-export type User = Omit<LoginResponse, 'token'>;
+export type User = Omit<LoginResponse, 'accessToken' | 'refreshToken'>;
 
 export interface Product {
   id: number;
