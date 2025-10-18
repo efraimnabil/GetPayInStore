@@ -1,11 +1,14 @@
+import { queryClient } from '@/services/queryClient';
 import { store } from '@/store/store';
 import { theme } from '@/theme/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'styled-components/native';
 
@@ -49,11 +52,14 @@ function RootLayoutNav() {
 
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <Stack>
-          <Stack.Screen name="index" options={{ title: 'Login' }} />
-        </Stack>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <Stack>
+            <Stack.Screen name="index" options={{ title: 'Login' }} />
+          </Stack>
+          <Toast />
+        </ThemeProvider>
+      </QueryClientProvider>
     </Provider>
   );
 }
