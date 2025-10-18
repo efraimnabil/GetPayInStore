@@ -1,31 +1,22 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { AppButton, AppText, FormInput, ProductCard, ScreenWrapper } from '@/components';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Alert } from 'react-native';
 
 export default function TabOneScreen() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <ScreenWrapper scrollable>
+      <AppText variant="headline" center>
+        GetPayInStore
+      </AppText>
+      
+      <AppText variant="body" color="secondary" center style={{ marginTop: 8, marginBottom: 24 }}>
+        Welcome to your new component-based app
+      </AppText>
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
