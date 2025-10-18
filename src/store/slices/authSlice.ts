@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '@/types/api';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface AuthState {
   token: string | null;
@@ -17,10 +17,17 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setCredentials(state, action: PayloadAction<{ user: User; token: string; superadminUser: string }>) {
+    setCredentials(state, action: PayloadAction<{ user: User | null; token: string; superadminUser?: string }>) {
       state.user = action.payload.user;
       state.token = action.payload.token;
-      state.isSuperadmin = action.payload.user.username === action.payload.superadminUser;
+      // Only update isSuperadmin if user exists and superadminUser is provided
+      if (action.payload.user && action.payload.superadminUser) {
+        state.isSuperadmin = action.payload.user.username === action.payload.superadminUser;
+      } else if (!action.payload.user) {
+        // If user is null (during session restoration), keep isSuperadmin as is
+        // It will be updated when the full user data is set
+        state.isSuperadmin = false;
+      }
     },
     clearCredentials(state) {
       state.user = null;
