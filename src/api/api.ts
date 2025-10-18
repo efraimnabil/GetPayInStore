@@ -1,4 +1,4 @@
-import { store } from '@/store';
+import { store } from '@/store/store';
 import { Category, LoginCredentials, LoginResponse, Product, ProductsResponse, User } from '@/types/api';
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
