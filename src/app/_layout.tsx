@@ -1,8 +1,9 @@
 import { queryClient } from '@/services/queryClient';
+import { mmkvPersister } from '@/services/queryPersister';
 import { store } from '@/store/store';
 import { theme } from '@/theme/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -52,14 +53,17 @@ function RootLayoutNav() {
 
   return (
     <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider 
+        client={queryClient} 
+        persistOptions={{ persister: mmkvPersister }}
+      >
         <ThemeProvider theme={theme}>
           <Stack>
             <Stack.Screen name="index" options={{ title: 'Login' }} />
           </Stack>
           <Toast />
         </ThemeProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </Provider>
   );
 }
