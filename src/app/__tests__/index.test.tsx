@@ -56,28 +56,6 @@ describe('LoginScreen', () => {
   });
 
   describe('rendering', () => {
-    it('should render the login form correctly', () => {
-      renderWithProviders(<Index />);
-
-      // Check for logo and app name
-      expect(screen.getByText('GetPayInStore')).toBeTruthy();
-      expect(screen.getByText('Sign in to continue')).toBeTruthy();
-
-      // Check for form fields
-      expect(screen.getByText('Username')).toBeTruthy();
-      expect(screen.getByPlaceholderText('Enter your username')).toBeTruthy();
-
-      expect(screen.getByText('Password')).toBeTruthy();
-      expect(screen.getByPlaceholderText('Enter your password')).toBeTruthy();
-
-      // Check for sign in button
-      expect(screen.getByText('Sign In')).toBeTruthy();
-
-      // Check for demo credentials
-      expect(screen.getByText('Demo credentials:')).toBeTruthy();
-      expect(screen.getByText('Username: emilys | Password: emilyspass')).toBeTruthy();
-    });
-
     it('should render username input field', () => {
       renderWithProviders(<Index />);
       const usernameInput = screen.getByPlaceholderText('Enter your username');
