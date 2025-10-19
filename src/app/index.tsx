@@ -157,11 +157,14 @@ export default function Index() {
             </ButtonContainer>
 
             <HelpTextContainer>
-              <AppText variant="caption" color="secondary" center>
-                Demo credentials:
+              <AppText variant="caption" color="secondary" center style={{ fontWeight: '600' }}>
+                Demo Credentials:
+              </AppText>
+              <AppText variant="caption" color="secondary" center style={{ marginTop: 8 }}>
+                Superadmin: emilys | Pass: emilyspass
               </AppText>
               <AppText variant="caption" color="secondary" center style={{ marginTop: 4 }}>
-                Username: emilys | Password: emilyspass
+                User: averyp | Pass: averyppass
               </AppText>
             </HelpTextContainer>
           </FormContainer>

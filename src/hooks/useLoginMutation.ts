@@ -7,7 +7,8 @@ import { router } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 
-const SUPERADMIN_USERNAME = 'emilys'; // As per DummyJSON docs
+// Superadmin user per project requirement
+const SUPERADMIN_USERNAME = 'emilys';
 const TOKEN_KEY = 'authToken';
 
 export function useLoginMutation() {

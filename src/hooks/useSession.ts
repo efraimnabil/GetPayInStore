@@ -14,8 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 let hasRestoredSessionGlobal = false;
 
 // TODO: Replace with actual role/permission system from backend
-// Currently using DummyJSON test username - not suitable for production
-const SUPERADMIN_USERNAME = 'kminchelle'; 
+// Superadmin user per project requirement
+const SUPERADMIN_USERNAME = 'emilys'; 
 
 /**
  * Helper function to save auth token to SecureStore
