@@ -1,12 +1,17 @@
 import { getCurrentUser } from '@/api/api';
+import { deleteToken, getStoredToken, saveToken, signOutApp } from '@/services/auth';
 import { clearCredentials, setCredentials } from '@/store/slices/authSlice';
 import { RootState } from '@/store/store';
 import { useQueryClient } from '@tanstack/react-query';
-import * as SecureStore from 'expo-secure-store';
+// SecureStore usage is centralized in services/auth
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-export const TOKEN_KEY = 'authToken';
+// TOKEN_KEY centralized in services/auth
+
+// Global guard to avoid re-running session restoration on every hook remount
+// This persists for the JS runtime lifetime (until app reload)
+let hasRestoredSessionGlobal = false;
 
 // TODO: Replace with actual role/permission system from backend
 // Currently using DummyJSON test username - not suitable for production
@@ -17,7 +22,7 @@ const SUPERADMIN_USERNAME = 'kminchelle';
  * Call this after successful login
  */
 export async function saveAuthToken(token: string): Promise<void> {
-  await SecureStore.setItemAsync(TOKEN_KEY, token);
+  await saveToken(token);
 }
 
 /**
@@ -36,30 +41,30 @@ export async function saveAuthToken(token: string): Promise<void> {
  */
 export function useSession() {
   const { user, token } = useSelector((state: RootState) => state.auth);
-  const [isLoading, setIsLoading] = useState(true);
+  // Initialize based on global restoration flag to prevent flashing/loading loops
+  const [isLoading, setIsLoading] = useState(!hasRestoredSessionGlobal);
+  const [sessionRestored, setSessionRestored] = useState(hasRestoredSessionGlobal);
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
+  console.log('🔄 useSession called - isLoading:', isLoading, 'sessionRestored:', sessionRestored, 'user:', user ? 'exists' : 'null', 'token:', token ? 'exists' : 'null');
+
   const signOut = useCallback(async () => {
-    // Clear Redux state
-    dispatch(clearCredentials());
-    
-    // Delete token from SecureStore
-    try {
-      await SecureStore.deleteItemAsync(TOKEN_KEY);
-    } catch (error) {
-      console.error('Failed to delete token from SecureStore:', error);
-    }
-    
-    // Clear React Query cache
-    queryClient.clear();
+    await signOutApp(queryClient, dispatch as any);
   }, [dispatch, queryClient]);
 
   useEffect(() => {
+    // Run session restoration only once per app runtime
+    if (hasRestoredSessionGlobal) return;
+
+    console.log('🔍 Starting session restoration...');
+
     async function restoreSession() {
       try {
         // Attempt to read token from SecureStore
-        const storedToken = await SecureStore.getItemAsync(TOKEN_KEY);
+  const storedToken = await getStoredToken();
+        
+        console.log('🔑 Stored token:', storedToken ? 'exists' : 'null');
         
         if (storedToken) {
           // Temporarily set token (with null user) to enable authenticated API calls
@@ -69,27 +74,49 @@ export function useSession() {
           }));
           
           // Validate token and fetch current user data
-          const currentUser = await getCurrentUser();
-          
-          // Set full credentials with user data
-          dispatch(setCredentials({ 
-            token: storedToken, 
-            user: currentUser, 
-            superadminUser: SUPERADMIN_USERNAME 
-          }));
+          try {
+            const currentUser = await getCurrentUser();
+            
+            // Set full credentials with user data
+            dispatch(setCredentials({ 
+              token: storedToken, 
+              user: currentUser, 
+              superadminUser: SUPERADMIN_USERNAME 
+            }));
+            console.log('✅ Session restored successfully');
+          } catch (apiError) {
+            // If API call fails (network error, invalid token, etc.), clear session
+            console.log('Session validation failed - clearing credentials');
+            dispatch(clearCredentials());
+            await deleteToken();
+          }
+        } else {
+          console.log('📭 No stored token - user not logged in');
         }
       } catch (error) {
-        console.error('Failed to restore session:', error);
         // If session restoration fails, ensure state is cleared
-        await signOut();
+        console.log('Session restore:', error);
+        dispatch(clearCredentials());
       } finally {
+        console.log('✅ Session restoration complete - setting isLoading to false');
         setIsLoading(false);
+        setSessionRestored(true);
+        hasRestoredSessionGlobal = true;
       }
     }
 
     restoreSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount
+  }, []); // Only run on first app mount
+
+  // CRITICAL: When user logs out (token becomes null after session was restored),
+  // ensure isLoading is false so TabLayout can properly redirect
+  useEffect(() => {
+    if (sessionRestored && token === null && user === null) {
+      console.log('🚪 User logged out - ensuring isLoading is false');
+      setIsLoading(false);
+    }
+  }, [token, user, sessionRestored]);
 
   return {
     user,

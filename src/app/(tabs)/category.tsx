@@ -1,9 +1,14 @@
-import { AppText, ScreenWrapper } from '@/components';
+import { AppText } from '@/components';
 import React from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import styled from 'styled-components/native';
 
-const Container = styled(View)`
+const Container = styled(ScrollView)`
+  flex: 1;
+  background-color: ${({ theme }: any) => theme.colors.background};
+`;
+
+const ContentWrapper = styled(View)`
   flex: 1;
   justify-content: center;
   align-items: center;
@@ -16,8 +21,8 @@ const Container = styled(View)`
  */
 export default function CategoryScreen() {
   return (
-    <ScreenWrapper>
-      <Container>
+    <Container contentContainerStyle={{ flexGrow: 1 }}>
+      <ContentWrapper>
         <AppText variant="headline" style={{ marginBottom: 16 }}>
           Categories
         </AppText>
@@ -27,7 +32,7 @@ export default function CategoryScreen() {
         <AppText variant="body" color="secondary" center style={{ marginTop: 16 }}>
           Product categories will be displayed here.
         </AppText>
-      </Container>
-    </ScreenWrapper>
+      </ContentWrapper>
+    </Container>
   );
 }

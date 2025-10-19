@@ -1,8 +1,6 @@
-import { useSession } from '@/hooks/useSession';
 import { Ionicons } from '@expo/vector-icons';
-import { Redirect, Tabs } from 'expo-router';
+import { Tabs } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
 
 /**
  * Protected Tab Layout
@@ -12,25 +10,10 @@ import { ActivityIndicator, View } from 'react-native';
  * - Renders tab navigator if user is authenticated
  */
 export default function TabLayout() {
-  const { user, isLoading } = useSession();
-
-  // Show loading spinner while checking session
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#007AFF" />
-      </View>
-    );
-  }
-
-  // Redirect to login if no user is authenticated
-  if (!user) {
-    return <Redirect href="/" />;
-  }
-
-  // Render tabs if user is authenticated
+  // Tab layout renders only when authenticated because AppLocker mounts this stack
   return (
     <Tabs
+      initialRouteName="products"
       screenOptions={{
         tabBarActiveTintColor: '#007AFF',
         headerShown: true,
@@ -56,11 +39,25 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="signOut"
+        name="account"
         options={{
-          title: 'Sign Out',
-          tabBarIcon: ({ color }) => <Ionicons name="log-out-outline" size={24} color={color} />,
-          headerTitle: 'Account',
+          title: 'Account',
+          tabBarIcon: ({ color }) => <Ionicons name="person-outline" size={24} color={color} />,
+          headerTitle: 'My Account',
+        }}
+      />
+      {/* Hide old routes from tab bar */}
+      <Tabs.Screen
+        name="index"
+        options={{
+          href: null, // This hides it from the router
+          headerShown: false, // If accessed directly, avoid showing a header titled 'Index'
+        }}
+      />
+      <Tabs.Screen
+        name="two"
+        options={{
+          href: null, // This hides it from the router
         }}
       />
     </Tabs>

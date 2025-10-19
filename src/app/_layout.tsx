@@ -7,9 +7,9 @@ import { theme } from '@/theme/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Redirect, Stack, useRootNavigationState, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
@@ -22,7 +22,7 @@ export {
 } from 'expo-router';
 
 export const unstable_settings = {
-  initialRouteName: '(tabs)',
+  initialRouteName: 'index',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -71,6 +71,10 @@ function RootLayoutNav() {
 function AppLocker() {
   const { resetTimer } = useAutoLock();
   const { isLocked } = useSelector((state: RootState) => state.lock);
+  const authToken = useSelector((state: RootState) => state.auth.token);
+  const navState = useRootNavigationState();
+  const segments = useSegments();
+  const [shouldRedirect, setShouldRedirect] = useState<string | null>(null);
 
   // Create PanResponder to detect any touch and reset the inactivity timer
   const panResponder = useRef(
@@ -86,19 +90,53 @@ function AppLocker() {
     })
   ).current;
 
+  // Single-source navigation: redirect to the correct branch when auth changes
+  const lastAuthRef = useRef<boolean | null>(null);
+  useEffect(() => {
+    if (!navState?.key) return; // wait until navigation is ready
+    const isAuth = !!authToken;
+    if (lastAuthRef.current === isAuth) return;
+    lastAuthRef.current = isAuth;
+    console.log('Auth state changed, checking navigation routing...');
+    console.log('Current segments:', segments);
+    console.log('Current nav key:', navState.key);
+    console.log('Is authenticated:', isAuth);
+
+    const first = (segments[0] as unknown as string | undefined) ?? undefined;
+    const atTabs = first === '(tabs)';
+    const atIndex = first == null || first === 'index';
+    console.log('At (tabs):', atTabs, 'At index:', atIndex);
+
+    if (isAuth && !atTabs) {
+      console.log('Need to redirect to (tabs) because user is authenticated.');
+      setShouldRedirect('/(tabs)/products');
+    } else if (!isAuth && atTabs) {
+      console.log('Need to redirect to index because user is not authenticated and at tabs.');
+      setShouldRedirect('/');
+    } else {
+      setShouldRedirect(null);
+    }
+
+  }, [authToken, navState?.key, segments]);
+
+  // Handle redirect using Redirect component
+  if (shouldRedirect) {
+    console.log('Redirecting to:', shouldRedirect);
+    return <Redirect href={shouldRedirect as any} />;
+  }
+
   return (
     <View style={{ flex: 1 }} {...panResponder.panHandlers}>
       <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      
-      {/* Global UI Components */}
       <Toast />
-      
-      {/* Conditionally render lock screen overlay */}
       {isLocked && <LockScreenOverlay />}
     </View>
   );
 }
+
+// (Auth navigation is handled declaratively by the index route and tabs layout)

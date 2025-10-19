@@ -1,9 +1,9 @@
 import { login } from '@/api/api';
+import { saveToken } from '@/services/auth';
 import { setCredentials } from '@/store/slices/authSlice';
 import { LoginCredentials, LoginResponse } from '@/types/api';
 import { useMutation } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 
@@ -27,7 +27,7 @@ export function useLoginMutation() {
         }
 
         // On success, store token and user data
-        await SecureStore.setItemAsync(TOKEN_KEY, tokenString);
+  await saveToken(tokenString);
         const { accessToken, refreshToken, ...user } = data;
         dispatch(setCredentials({ user, token: tokenString, superadminUser: SUPERADMIN_USERNAME }));
 
@@ -38,8 +38,9 @@ export function useLoginMutation() {
           text2: `Welcome back, ${user.firstName}!`,
         });
 
-        // Navigate to the main app screen
-        router.replace('/(tabs)');
+
+        // Navigate to login page
+        router.replace('/(tabs)/products');
       } catch (error) {
         console.error('Error saving token:', error);
         Toast.show({

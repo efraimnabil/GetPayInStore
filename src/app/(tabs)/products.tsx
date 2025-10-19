@@ -1,11 +1,16 @@
-import { AppText, ScreenWrapper } from '@/components';
+import { AppText } from '@/components';
 import { RootState } from '@/store/store';
 import React from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/native';
 
-const Container = styled(View)`
+const Container = styled(ScrollView)`
+  flex: 1;
+  background-color: ${({ theme }: any) => theme.colors.background};
+`;
+
+const ContentWrapper = styled(View)`
   flex: 1;
   justify-content: center;
   align-items: center;
@@ -21,11 +26,11 @@ const WelcomeText = styled(AppText)`
  * Placeholder screen for displaying products
  */
 export default function ProductsScreen() {
-  const user = useSelector((state: RootState) => state.auth.user);
+  const { user } = useSelector((state: RootState) => state.auth);
 
   return (
-    <ScreenWrapper>
-      <Container>
+    <Container contentContainerStyle={{ flexGrow: 1 }}>
+      <ContentWrapper>
         <WelcomeText variant="headline">
           Welcome, {user?.firstName || 'User'}!
         </WelcomeText>
@@ -35,7 +40,7 @@ export default function ProductsScreen() {
         <AppText variant="body" color="secondary" center style={{ marginTop: 16 }}>
           Product listings will be displayed here.
         </AppText>
-      </Container>
-    </ScreenWrapper>
+      </ContentWrapper>
+    </Container>
   );
 }

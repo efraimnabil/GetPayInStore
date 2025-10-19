@@ -46,10 +46,16 @@ export default function Index() {
 
   const loginMutation = useLoginMutation();
 
-  // If user is already authenticated, redirect to main app
-  if (token) {
-    return <Redirect href="/(tabs)" />;
+  console.log('Index page - token:', token);
+
+  // If user is already authenticated, redirect to main app (specific tab)
+  // Only redirect if token exists and is truthy (not null/undefined/empty)
+  if (token && token.length > 0) {
+    console.log('Index page - redirecting to products because authenticated');
+    return <Redirect href="/(tabs)/products" />;
   }
+
+  console.log('Index page - showing login form');
 
   const validateForm = () => {
     const newErrors: { username?: string; password?: string } = {};
