@@ -13,14 +13,18 @@ interface ProductCardProps {
   showDeleteButton?: boolean;
 }
 
-const Card = styled(TouchableOpacity)`
+const Card = styled(TouchableOpacity)<{ theme?: any }>`
   background-color: ${({ theme }) => theme.colors.surface};
   border-radius: ${({ theme }) => theme.radii.lg}px;
   padding: ${({ theme }) => theme.spacing.md}px;
   margin-bottom: ${({ theme }) => theme.spacing.md}px;
   flex-direction: row;
   align-items: center;
-  ${({ theme }) => theme.shadows.standard};
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.23;
+  shadow-radius: 2.62px;
+  elevation: 4;
 `;
 
 const Thumbnail = styled(Image)`
