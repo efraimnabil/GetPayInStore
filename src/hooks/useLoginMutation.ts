@@ -17,8 +17,6 @@ export function useLoginMutation() {
     mutationFn: login,
     onSuccess: async (data) => {
       try {
-        console.log('Login response data:', data);
-        
         // Ensure token is a string
         const tokenString = String(data.accessToken || '');
         
@@ -27,7 +25,7 @@ export function useLoginMutation() {
         }
 
         // On success, store token and user data
-  await saveToken(tokenString);
+        await saveToken(tokenString);
         const { accessToken, refreshToken, ...user } = data;
         dispatch(setCredentials({ user, token: tokenString, superadminUser: SUPERADMIN_USERNAME }));
 

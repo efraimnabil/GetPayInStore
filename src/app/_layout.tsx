@@ -97,21 +97,14 @@ function AppLocker() {
     const isAuth = !!authToken;
     if (lastAuthRef.current === isAuth) return;
     lastAuthRef.current = isAuth;
-    console.log('Auth state changed, checking navigation routing...');
-    console.log('Current segments:', segments);
-    console.log('Current nav key:', navState.key);
-    console.log('Is authenticated:', isAuth);
 
     const first = (segments[0] as unknown as string | undefined) ?? undefined;
     const atTabs = first === '(tabs)';
     const atIndex = first == null || first === 'index';
-    console.log('At (tabs):', atTabs, 'At index:', atIndex);
 
     if (isAuth && !atTabs) {
-      console.log('Need to redirect to (tabs) because user is authenticated.');
       setShouldRedirect('/(tabs)/products');
     } else if (!isAuth && atTabs) {
-      console.log('Need to redirect to index because user is not authenticated and at tabs.');
       setShouldRedirect('/');
     } else {
       setShouldRedirect(null);
@@ -121,7 +114,6 @@ function AppLocker() {
 
   // Handle redirect using Redirect component
   if (shouldRedirect) {
-    console.log('Redirecting to:', shouldRedirect);
     return <Redirect href={shouldRedirect as any} />;
   }
 
