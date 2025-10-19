@@ -22,6 +22,7 @@ This repository contains the source code for the GetPayIn 3-page store applicati
   - User-friendly toast notifications for API errors
   - Loading states and error boundaries
 - **Comprehensive Testing**: The project includes a full suite of unit and component tests using Jest and React Native Testing Library, achieving high coverage of critical logic.
+- **Continuous Integration**: Automated testing pipeline using GitHub Actions that runs on every push and pull request, ensuring code quality and preventing regressions.
 
 ## Chosen Configuration
 
@@ -51,6 +52,7 @@ This repository contains the source code for the GetPayIn 3-page store applicati
 ### Testing
 - **Testing Framework**: Jest & React Native Testing Library
 - **Coverage**: Targeted tests (Redux slices, basic render). Additional tests can be added for hooks and screens.
+- **CI/CD**: GitHub Actions workflow for automated testing on every push and PR
 
 ### Architecture Highlights
 
@@ -141,20 +143,34 @@ npx expo start
 
 ### Running Tests
 
-To run the complete test suite:
+The project includes comprehensive automated testing with Jest and React Native Testing Library.
+
+#### Run All Tests
 ```bash
 npm test
 ```
 
-To run tests in watch mode:
+#### Run Tests in Watch Mode
 ```bash
 npm run test:watch
 ```
 
-To generate coverage report:
+#### Generate Coverage Report
 ```bash
 npm run test:coverage
 ```
+
+#### Continuous Integration
+The project uses GitHub Actions for automated testing. Tests run automatically on:
+- Every push to any branch
+- Every pull request
+
+The CI pipeline ensures:
+- All tests pass before merging
+- Consistent test results across environments
+- Early detection of breaking changes
+
+You can view the test results in the "Actions" tab of the GitHub repository.
 
 ## Login Credentials
 
@@ -211,8 +227,10 @@ Example regular user:
 
 ### 6. Testing Strategy
 - Unit tests for Redux slices
+- Component tests for UI components
 - Basic component smoke test
 - Jest setup mocks MMKV, SecureStore, LocalAuth, NetInfo, and Expo Router
+- Automated CI/CD pipeline with GitHub Actions
 
 ## Architecture Decisions
 
@@ -268,7 +286,6 @@ While React Query handles server state, Redux Toolkit is perfect for app-wide cl
 - [ ] Push notifications
 - [ ] Analytics integration
 - [ ] Performance monitoring
-- [ ] CI/CD pipeline
 - [ ] E2E testing with Detox
 
 ## License
