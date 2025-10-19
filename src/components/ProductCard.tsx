@@ -69,7 +69,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </ContentContainer>
       {showDeleteButton && onDelete && (
-        <DeleteButton onPress={onDelete} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+        <DeleteButton 
+          onPress={onDelete} 
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          testID="delete-button"
+        >
           <Ionicons name="trash-outline" size={24} color="#FF3B30" />
         </DeleteButton>
       )}
