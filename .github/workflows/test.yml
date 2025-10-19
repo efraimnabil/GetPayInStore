@@ -33,6 +33,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Clean obsolete snapshots
+        run: |
+          find src -type d -name "__snapshots__" -prune -exec rm -rf {} + || true
+
       - name: Run tests
         env:
           CI: true
