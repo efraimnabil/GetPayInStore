@@ -1,4 +1,4 @@
-import { AppText, ProductCard } from '@/components';
+import { AppText, ProductCard, ScreenWrapper } from '@/components';
 import { useProductsByCategory } from '@/hooks/useProductsByCategory';
 import { Product } from '@/types/api';
 import React from 'react';
@@ -112,20 +112,22 @@ export default function CategoryScreen() {
   }
 
   return (
-    <Container>
-      <FlatList
-        data={data.products}
-        renderItem={renderProduct}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ padding: 16 }}
-        ListHeaderComponent={renderHeader}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetching}
-            onRefresh={refetch}
-          />
-        }
-      />
-    </Container>
+    <ScreenWrapper noPadding>
+      <Container>
+        <FlatList
+          data={data.products}
+          renderItem={renderProduct}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ padding: 16 }}
+          ListHeaderComponent={renderHeader}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefetching}
+              onRefresh={refetch}
+            />
+          }
+        />
+      </Container>
+    </ScreenWrapper>
   );
 }

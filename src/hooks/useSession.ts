@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/api/api';
 import { deleteToken, getStoredToken, saveToken, signOutApp } from '@/services/auth';
 import { clearCredentials, setCredentials } from '@/store/slices/authSlice';
+import { setLocked } from '@/store/slices/lockSlice';
 import { RootState } from '@/store/store';
 import { useQueryClient } from '@tanstack/react-query';
 // SecureStore usage is centralized in services/auth
@@ -12,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // Global guard to avoid re-running session restoration on every hook remount
 // This persists for the JS runtime lifetime (until app reload)
 let hasRestoredSessionGlobal = false;
+let initialLockTriggered = false; // ensure biometric lock shows once on cold start when token exists
 
 // TODO: Replace with actual role/permission system from backend
 // Superadmin user per project requirement
@@ -83,6 +85,11 @@ export function useSession() {
               user: currentUser, 
               superadminUser: SUPERADMIN_USERNAME 
             }));
+            // If a valid session exists on launch, present biometric lock once
+            if (!initialLockTriggered) {
+              (dispatch as any)(setLocked(true));
+              initialLockTriggered = true;
+            }
             console.log('✅ Session restored successfully');
           } catch (apiError) {
             // If API call fails (network error, invalid token, etc.), clear session

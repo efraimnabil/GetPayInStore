@@ -5,17 +5,17 @@ This repository contains the source code for the GetPayIn 3-page store applicati
 ## Features Implemented
 
 ### Core Features
-- **Authentication**: Secure login using DummyJSON API (`/auth/login`). Session is persisted and restored on app launch.
-- **Biometric Unlock**: The app is secured with biometric authentication (Face ID/Touch ID) with a password fallback.
-- **Auto-Lock**: The application automatically locks after 10 seconds of user inactivity or when the app is sent to the background.
+- **Authentication**: Secure login using DummyJSON API (`/auth/login`). Session is persisted and restored on app launch, validated via `/auth/me`.
+- **Biometric Unlock**: Biometric authentication (Face ID/Touch ID) with a password fallback (demo password: "1234"). If a valid session is detected on app launch, the biometric unlock is prompted immediately.
+- **Auto-Lock**: Automatically locks after 10 seconds of user inactivity and when the app goes to the background.
 
 ### Product Management
-- **All Products Screen**: Displays a comprehensive list of all available products with infinite scrolling support.
-- **Specific Category Screen**: Shows products filtered by the **smartphones** category.
-- **Superadmin Role**: The designated user (`emilys`) has superadmin privileges, enabling them to see and use a delete button for products.
+- **All Products Screen**: Displays a list of products with pull-to-refresh.
+- **Specific Category Screen**: Shows products filtered by the **smartphones** category with pull-to-refresh.
+- **Superadmin Role**: The designated user (`emilys`) has superadmin privileges, enabling a delete button on products.
 
 ### Advanced Features
-- **Offline Support**: All product data is cached using React Query and persisted to the device with MMKV. This allows the app to function seamlessly offline, with data instantly available on launch.
+- **Offline Support**: Product data is cached using React Query and persisted to the device with MMKV. Cached lists render instantly on relaunch and remain available offline. An offline banner is displayed on the Products and Category screens when disconnected.
 - **Modern UI & Design System**: A custom, theme-based design system was built from scratch using styled-components to ensure a polished and consistent user interface.
 - **Advanced Feedback**: 
   - Global offline indicator
@@ -50,7 +50,7 @@ This repository contains the source code for the GetPayIn 3-page store applicati
 
 ### Testing
 - **Testing Framework**: Jest & React Native Testing Library
-- **Coverage**: Comprehensive unit and component tests
+- **Coverage**: Targeted tests (Redux slices, basic render). Additional tests can be added for hooks and screens.
 
 ### Architecture Highlights
 
@@ -197,11 +197,10 @@ Example regular user:
 - Instant data availability on app launch
 
 ### 4. Product Management
-- **All Products**: Paginated list with infinite scroll
-- **Smartphones Category**: Filtered product view
+- **All Products**: List with pull-to-refresh
+- **Smartphones Category**: Filtered product view with pull-to-refresh
 - **Delete Functionality**: Available only to superadmin user
-- **Optimistic Updates**: Immediate UI feedback for mutations
-- **Error Handling**: Toast notifications for all API operations
+- **Error Handling**: Toast notifications for API operations
 
 ### 5. Design System
 - Custom theme built with styled-components
@@ -211,11 +210,9 @@ Example regular user:
 - Type-safe theming with TypeScript
 
 ### 6. Testing Strategy
-- Unit tests for business logic (hooks, utilities)
-- Component tests for UI components
-- Integration tests for key user flows
-- Mocked API responses for consistent testing
-- High test coverage for critical paths
+- Unit tests for Redux slices
+- Basic component smoke test
+- Jest setup mocks MMKV, SecureStore, LocalAuth, NetInfo, and Expo Router
 
 ## Architecture Decisions
 
@@ -264,7 +261,7 @@ While React Query handles server state, Redux Toolkit is perfect for app-wide cl
 
 ## Future Enhancements
 
-- [ ] Pull-to-refresh functionality
+- [ ] Infinite scrolling / pagination
 - [ ] Product search and filtering
 - [ ] Shopping cart functionality
 - [ ] Order history

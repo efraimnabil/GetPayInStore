@@ -1,4 +1,4 @@
-import { AppText, ProductCard } from '@/components';
+import { AppText, ProductCard, ScreenWrapper } from '@/components';
 import { useDeleteProductMutation } from '@/hooks/useDeleteProductMutation';
 import { useProducts } from '@/hooks/useProducts';
 import { RootState } from '@/store/store';
@@ -145,17 +145,19 @@ export default function ProductsScreen() {
   }
 
   return (
-    <Container>
-      <FlatList
-        data={data.products}
-        renderItem={renderProduct}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ padding: 16 }}
-        ListHeaderComponent={renderHeader}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
-        }
-      />
-    </Container>
+    <ScreenWrapper noPadding>
+      <Container>
+        <FlatList
+          data={data.products}
+          renderItem={renderProduct}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ padding: 16 }}
+          ListHeaderComponent={renderHeader}
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+          }
+        />
+      </Container>
+    </ScreenWrapper>
   );
 }
