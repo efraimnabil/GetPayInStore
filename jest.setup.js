@@ -77,3 +77,35 @@ jest.mock('expo-router', () => ({
   Link: jest.fn(({ children }) => children),
   Redirect: jest.fn(() => null),
 }));
+
+// Mock @react-native-community/netinfo
+jest.mock('@react-native-community/netinfo', () => ({
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+  fetch: jest.fn(() => Promise.resolve({
+    type: 'wifi',
+    isConnected: true,
+    isInternetReachable: true,
+    details: {
+      isConnectionExpensive: false,
+      ssid: 'Test-WiFi',
+      strength: 100,
+      ipAddress: '192.168.1.1',
+      subnet: '255.255.255.0',
+    },
+  })),
+  useNetInfo: jest.fn(() => ({
+    type: 'wifi',
+    isConnected: true,
+    isInternetReachable: true,
+  })),
+}));
+
+// Mock react-native-toast-message
+jest.mock('react-native-toast-message', () => ({
+  __esModule: true,
+  default: {
+    show: jest.fn(),
+    hide: jest.fn(),
+  },
+}));
