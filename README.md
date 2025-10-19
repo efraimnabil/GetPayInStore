@@ -1,4 +1,4 @@
-# GetPayIn - React Native Coding Challenge
+# GetPayIn - React Native
 
 This repository contains the source code for the GetPayIn 3-page store application, built with React Native and Expo. The application is designed with a modern, scalable architecture and a focus on code quality, user experience, and robustness.
 
