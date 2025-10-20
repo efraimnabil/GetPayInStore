@@ -1,3 +1,4 @@
+import { useTheme } from '@/contexts/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -10,15 +11,26 @@ import React from 'react';
  * - Renders tab navigator if user is authenticated
  */
 export default function TabLayout() {
+  const { theme } = useTheme();
+  
   // Tab layout renders only when authenticated because AppLocker mounts this stack
   return (
     <Tabs
       initialRouteName="products"
       screenOptions={{
-        tabBarActiveTintColor: '#007AFF',
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.text_secondary,
         headerShown: true,
+        headerStyle: {
+          backgroundColor: theme.colors.surface,
+        },
+        headerTintColor: theme.colors.text_primary,
+        headerTitleStyle: {
+          color: theme.colors.text_primary,
+        },
         tabBarStyle: {
-          backgroundColor: '#fff',
+          backgroundColor: theme.colors.surface,
+          borderTopColor: theme.colors.border,
         },
       }}
     >

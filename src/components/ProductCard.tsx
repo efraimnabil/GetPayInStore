@@ -20,18 +20,20 @@ const Card = styled(TouchableOpacity)<{ theme?: any }>`
   margin-bottom: ${({ theme }) => theme.spacing.md}px;
   flex-direction: row;
   align-items: center;
-  shadow-color: #000;
-  shadow-offset: 0px 2px;
-  shadow-opacity: 0.23;
-  shadow-radius: 2.62px;
+  shadow-color: ${({ theme }) => theme.shadows.standard.shadowColor};
+  shadow-offset: 0px 4px;
+  shadow-opacity: 0.1;
+  shadow-radius: 8px;
   elevation: 4;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.border_light};
 `;
 
 const Thumbnail = styled(Image)`
   width: 80px;
   height: 80px;
   border-radius: ${({ theme }) => theme.radii.md}px;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${({ theme }) => theme.colors.background_secondary};
 `;
 
 const ContentContainer = styled(View)`

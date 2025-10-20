@@ -1,9 +1,9 @@
 import { LockScreenOverlay } from '@/components/LockScreenOverlay';
+import { ThemeProvider as CustomThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import { useAutoLock } from '@/hooks/useAutoLock';
 import { queryClient } from '@/services/queryClient';
 import { mmkvPersister } from '@/services/queryPersister';
 import { RootState, store } from '@/store/store';
-import { theme } from '@/theme/theme';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
@@ -17,8 +17,8 @@ import { Provider, useSelector } from 'react-redux';
 import { ThemeProvider } from 'styled-components/native';
 
 export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary
+    // Catch any errors thrown by the Layout component.
+    ErrorBoundary
 } from 'expo-router';
 
 export const unstable_settings = {
@@ -59,11 +59,22 @@ function RootLayoutNav() {
         client={queryClient} 
         persistOptions={{ persister: mmkvPersister }}
       >
-        <ThemeProvider theme={theme}>
-          <AppLocker />
-        </ThemeProvider>
+        <CustomThemeProvider>
+          <ThemedAppLocker />
+        </CustomThemeProvider>
       </PersistQueryClientProvider>
     </Provider>
+  );
+}
+
+// Wrapper to access theme from context
+function ThemedAppLocker() {
+  const { theme } = useTheme();
+  
+  return (
+    <ThemeProvider theme={theme}>
+      <AppLocker />
+    </ThemeProvider>
   );
 }
 
@@ -75,6 +86,7 @@ function AppLocker() {
   const navState = useRootNavigationState();
   const segments = useSegments();
   const [shouldRedirect, setShouldRedirect] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   // Create PanResponder to detect any touch and reset the inactivity timer
   const panResponder = useRef(
@@ -119,7 +131,17 @@ function AppLocker() {
 
   return (
     <View style={{ flex: 1 }} {...panResponder.panHandlers}>
-      <Stack>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
+          headerTintColor: theme.colors.text_primary,
+          headerTitleStyle: {
+            color: theme.colors.text_primary,
+          },
+        }}
+      >
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
