@@ -1,12 +1,22 @@
 import authReducer from '@/store/slices/authSlice';
 import lockReducer from '@/store/slices/lockSlice';
-import { theme } from '@/theme/theme';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { lightTheme } from '@/theme/theme';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { ThemeProvider } from 'styled-components/native';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components/native';
 import Index from '../index';
+
+// Mock MMKV storage
+jest.mock('react-native-mmkv', () => ({
+  MMKV: jest.fn(() => ({
+    getString: jest.fn(() => 'light'),
+    set: jest.fn(),
+    delete: jest.fn(),
+  })),
+}));
 
 // Mock the useLoginMutation hook
 const mockMutate = jest.fn();
@@ -23,6 +33,11 @@ jest.mock('expo-router', () => ({
   router: {
     replace: jest.fn(),
   },
+}));
+
+// Mock expo-linear-gradient
+jest.mock('expo-linear-gradient', () => ({
+  LinearGradient: ({ children }: any) => children,
 }));
 
 // Helper to create a test store
@@ -44,7 +59,11 @@ const renderWithProviders = (
   const store = createTestStore(initialState);
   return render(
     <Provider store={store}>
-      <ThemeProvider theme={theme}>{component}</ThemeProvider>
+      <ThemeProvider>
+        <StyledThemeProvider theme={lightTheme}>
+          {component}
+        </StyledThemeProvider>
+      </ThemeProvider>
     </Provider>
   );
 };
