@@ -1,6 +1,6 @@
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import authReducer from '@/store/slices/authSlice';
 import lockReducer from '@/store/slices/lockSlice';
-import { ThemeProvider } from '@/contexts/ThemeContext';
 import { lightTheme } from '@/theme/theme';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen } from '@testing-library/react-native';
