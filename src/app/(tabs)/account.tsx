@@ -307,7 +307,14 @@ export default function AccountScreen() {
               <Ionicons name="mail" size={20} color={currentTheme.colors.text_secondary} />
               <AppText variant="body" color="secondary">Email</AppText>
             </View>
-            <AppText variant="body" style={{ fontWeight: '500' }}>{user?.email}</AppText>
+            <AppText 
+              variant="body" 
+              style={{ fontWeight: '500', flexShrink: 1 }} 
+              numberOfLines={1} 
+              ellipsizeMode="tail"
+            >
+              {user?.email}
+            </AppText>
           </InfoRow>
           <InfoRow>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
