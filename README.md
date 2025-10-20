@@ -6,7 +6,7 @@ This repository contains the source code for the GetPayIn 3-page store applicati
 
 ## 📱 Download APK
 
-**Latest Build:** [Download APK](https://expo.dev/accounts/efraim_nabil/projects/GetPayInStore/builds/ffcc83b8-60e4-433e-896e-3e3b50c459b4)
+**Latest Build:** [Download APK](https://expo.dev/accounts/efraim_nabil/projects/GetPayInStore/builds/0db32779-a74f-41a5-bc34-afd69a339145)
 
 Install this APK on your Android device to test the app.
 
