@@ -7,14 +7,14 @@ This document explains how the GetPayInStore app is structured.
 ```
 GetPayInStore/
 ├── src/
-│   ├── app/              # App screens (Expo Router)
+│   ├── app/              # App screens (Expo Router - file-based routing)
 │   ├── api/              # API client setup
 │   ├── components/       # Reusable UI components
+│   ├── contexts/         # React contexts (Theme, etc.)
 │   ├── hooks/            # Custom React hooks
-│   ├── screens/          # Screen components
-│   ├── services/         # Business logic
+│   ├── services/         # Business logic & API services
 │   ├── store/            # Redux state management
-│   ├── theme/            # Design system & styles
+│   ├── theme/            # Design system, theme definitions & styled-components
 │   ├── types/            # TypeScript types
 │   └── utils/            # Helper functions
 ├── android/              # Native Android code
@@ -24,20 +24,37 @@ GetPayInStore/
 
 ## Key Folders Explained
 
-### `/src/app/` - Screens
-Uses Expo Router for file-based navigation:
+### `/src/app/` - Screens (Expo Router)
+Uses Expo Router for file-based navigation. **All screens live here**:
+- `index.tsx` - Login screen (root entry point)
+- `_layout.tsx` - Root layout with theme provider & authentication
 - `(tabs)/` - Main app tabs (Products, Category, Account)
-- `_layout.tsx` - Root layout with authentication check
-- `index.tsx` - Entry point that redirects to tabs
+  - `products.tsx` - Products list screen
+  - `account.tsx` - User account/profile screen with theme toggle
+  - `category.tsx` - Categories screen
 - `modal.tsx` - Modal screens
+
+**Note**: With Expo Router, the file structure in `app/` defines the routes automatically.
 
 ### `/src/components/` - UI Components
 Reusable components used throughout the app:
 - `AppButton.tsx` - Styled button component
 - `AppText.tsx` - Styled text component
 - `FormInput.tsx` - Input fields for forms
-- `ProductCard.tsx` - Product display card
-- `LockScreenOverlay.tsx` - Biometric lock screen
+- `ProductCard.tsx` - Product display card with theme support
+- `LockScreenOverlay.tsx` - Biometric lock screen with gradient
+
+### `/src/contexts/` - React Contexts
+Global state management using React Context:
+- `ThemeContext.tsx` - Theme provider with dark/light mode toggle
+  - Manages theme state (light/dark)
+  - Persists theme preference using MMKV
+  - Provides `useTheme()` hook
+
+### `/src/theme/` - Design System
+Theme definitions and styled-components setup:
+- `theme.ts` - Light and dark theme definitions (colors, spacing, shadows, etc.)
+- `styled-components.d.ts` - TypeScript definitions for theme
 
 ### `/src/hooks/` - Custom Hooks
 React hooks for specific functionality:

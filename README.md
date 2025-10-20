@@ -73,17 +73,21 @@ The architecture strictly separates client and server state, a modern best pract
 ```
 GetPayInStore/
 ├── src/
-│   ├── app/                    # Expo Router pages
-│   │   ├── (tabs)/            # Tab-based navigation
-│   │   ├── _layout.tsx        # Root layout
-│   │   └── index.tsx          # Home/redirect screen
+│   ├── app/                    # Expo Router screens & pages
+│   │   ├── (tabs)/            # Tab-based navigation screens
+│   │   │   ├── products.tsx   # Products list screen
+│   │   │   ├── account.tsx    # Account/profile screen
+│   │   │   └── category.tsx   # Categories screen
+│   │   ├── _layout.tsx        # Root layout with theme provider
+│   │   ├── index.tsx          # Login screen
+│   │   └── modal.tsx          # Modal screens
 │   ├── api/                   # API client configuration
 │   ├── components/            # Reusable UI components
+│   ├── contexts/              # React contexts (Theme, etc.)
 │   ├── hooks/                 # Custom React hooks
-│   ├── screens/               # Screen components
 │   ├── services/              # Business logic & services
 │   ├── store/                 # Redux store & slices
-│   ├── theme/                 # Design system & theme
+│   ├── theme/                 # Design system & theme definitions
 │   ├── types/                 # TypeScript type definitions
 │   └── utils/                 # Utility functions
 ├── android/                   # Native Android code
